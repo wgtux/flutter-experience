@@ -1,8 +1,27 @@
+import 'package:fe_lab_clinicas_core/fe_lab_clinicas_core.dart';
 import 'package:flutter/material.dart';
+import 'package:validatorless/validatorless.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
 
   const LoginPage({ super.key });
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  final formKey = GlobalKey<FormState>();
+  final emailEC = TextEditingController();
+  final passwordEC = TextEditingController();
+
+  @override
+  void dispose() {
+    emailEC.dispose();
+    passwordEC.dispose();
+    super.dispose();
+  }
 
    @override
    Widget build(BuildContext context) {
@@ -27,27 +46,46 @@ class LoginPage extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16)
                     ),
-                  child: Column(
-                    children: [
-                      const Text('Login'),
-                      SizedBox(height: 32),
-                      TextFormField(
-                        decoration: const InputDecoration(label: Text('Email')),
-                      ),
-                      SizedBox(height: 24),
-                      TextFormField(
-                        decoration: const InputDecoration(label: Text('password')),
-                      ),
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: sizeOf.width * .8,
-                        height: 48,
-                        child: ElevatedButton(onPressed: () {}, 
-                          child: const Text('ENTRAR'),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Login',
+                          style: LabClinicasTheme.titleStyle,
                         ),
+                        SizedBox(height: 32),
+                        TextFormField(
+                          controller: emailEC,
+                          validator: Validatorless.multiple([
+                            Validatorless.required('Email Obrigatório'),
+                            Validatorless.email('Eamil Obrigatório')
+                          ]),
+                          decoration: const InputDecoration(label: Text('Email')),
+                        ),
+                        SizedBox(height: 24),
+                        TextFormField(
+                          obscureText: true,
+                          controller: passwordEC,
+                          validator: Validatorless.required('Senha Obrigatória'),
+                          decoration: const InputDecoration(label: Text('password')),
+                        ),
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: sizeOf.width * .8,
+                          height: 48,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              final valid = formKey.currentState?.validate() ?? false;
+
+                              if(valid){}
+                            }, 
+                            child: const Text('ENTRAR'),
+                          ),
+                        ),
+                      ],
                       ),
-                    ],
-                    ),
+                  ),
                 ),
               ),
              ),
